@@ -21,11 +21,15 @@ if(!function_exists('pwdEncrypt')){
      */
     function pwdEncrypt($str,$is_encode=true){
         $ci = &get_instance();
-        $ci->load->library('encrypt');
+        //$ci->load->library('encrypt');
+        $key = 'Xwh3ylvh51K5pxMWDRpnznKXWrjB/Jnpzp8aKYDwN4k=';
+        $iv = '7gOlEnIk1E8bJb1XAzMpsQ==';
         if($is_encode){
-            $res = $ci->encrypt->encode($str);
+            $encrypted = openssl_encrypt($str, 'aes-256-cbc', base64_decode($key), OPENSSL_RAW_DATA, base64_decode($iv));
+            $res = base64_encode($encrypted);
         }else{
-            $res = $ci->encrypt->decode($str);
+             $encrypted = base64_decode($str);
+             $res = openssl_decrypt($encrypted, 'aes-256-cbc', base64_decode($key), OPENSSL_RAW_DATA, base64_decode($iv));
         }
         return $res;
     }
